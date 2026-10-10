@@ -1,0 +1,7 @@
+{
+  "nature_in_a_bottle.configuration.harvest_multiplier": "产物倍率",
+  "nature_in_a_bottle.configuration.reset_crop": "收获后作物退回幼苗",
+  "nature_in_a_bottle.configuration.drop_as_items": "产物直接掉在地上",
+  "nature_in_a_bottle.configuration.consume_stored_time": "消耗瓶内时间",
+  "nature_in_a_bottle.configuration.play_sound": "播放时间之瓶音符"
+}

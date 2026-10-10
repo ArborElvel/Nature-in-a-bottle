@@ -1,0 +1,7 @@
+{
+  "nature_in_a_bottle.configuration.harvest_multiplier": "Harvest multiplier",
+  "nature_in_a_bottle.configuration.reset_crop": "Reset crop after harvest",
+  "nature_in_a_bottle.configuration.drop_as_items": "Drop the produce on the ground",
+  "nature_in_a_bottle.configuration.consume_stored_time": "Consume stored time",
+  "nature_in_a_bottle.configuration.play_sound": "Play the bottle note"
+}
