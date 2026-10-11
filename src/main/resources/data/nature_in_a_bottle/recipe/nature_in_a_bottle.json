@@ -1,14 +1,12 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "nature_in_a_bottle:bottle_conversion",
   "category": "misc",
-  "ingredients": [
-    {
-      "item": "tiab:time_in_a_bottle"
-    },
-    {
-      "item": "minecraft:bone_meal"
-    }
-  ],
+  "bottle": {
+    "item": "tiab:time_in_a_bottle"
+  },
+  "material": {
+    "item": "minecraft:bone_meal"
+  },
   "result": {
     "count": 1,
     "id": "nature_in_a_bottle:nature_in_a_bottle"

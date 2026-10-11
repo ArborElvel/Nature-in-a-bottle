@@ -1,14 +1,12 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "nature_in_a_bottle:bottle_conversion",
   "category": "misc",
-  "ingredients": [
-    {
-      "item": "nature_in_a_bottle:nature_in_a_bottle"
-    },
-    {
-      "item": "minecraft:redstone"
-    }
-  ],
+  "bottle": {
+    "item": "nature_in_a_bottle:nature_in_a_bottle"
+  },
+  "material": {
+    "item": "minecraft:redstone"
+  },
   "result": {
     "count": 1,
     "id": "tiab:time_in_a_bottle"

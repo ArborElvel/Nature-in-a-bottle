@@ -161,7 +161,10 @@ public class NatureInABottleItem extends Item {
         setStoredTime(stack, Math.max(0, stored.stored() - ticks), stored.total());
     }
 
-    private static void setStoredTime(ItemStack stack, int stored, int total) {
+    /**
+     * 写回瓶内时间，并刷新物品描述。转化配方也复用这里，让合成出来的瓶子直接带上时间。
+     */
+    public static void setStoredTime(ItemStack stack, int stored, int total) {
         ICommonTimeInABottleAPI api = ICommonTimeInABottleAPI.COMMON_API.get();
         stack.set(api.getRegistration().getStoredTime(), api.createStoredTimeComponent(stored, total));
         stack.set(DataComponents.LORE, new ItemLore(List.of(
@@ -169,7 +172,10 @@ public class NatureInABottleItem extends Item {
                 CommonHelper.getTotalTimeTranslated(total))));
     }
 
-    private static IStoredTimeComponent storedTime(ItemStack stack) {
+    /**
+     * 读瓶内时间；没有这个组件（例如别的物品）就当成空瓶。
+     */
+    public static IStoredTimeComponent storedTime(ItemStack stack) {
         ICommonTimeInABottleAPI api = ICommonTimeInABottleAPI.COMMON_API.get();
         return stack.getOrDefault(api.getRegistration().getStoredTime(), api.createStoredTimeComponent(0, 0));
     }

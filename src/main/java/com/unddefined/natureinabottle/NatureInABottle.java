@@ -3,6 +3,7 @@ package com.unddefined.natureinabottle;
 import com.unddefined.natureinabottle.config.ModSettings;
 import com.unddefined.natureinabottle.crops.HarvestTracker;
 import com.unddefined.natureinabottle.items.NatureInABottleItem;
+import com.unddefined.natureinabottle.registry.ModRecipes;
 import com.unddefined.natureinabottle.server.events.BottleTicker;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -53,6 +54,7 @@ public final class NatureInABottle {
 
     public NatureInABottle(IEventBus modBus, ModContainer container) {
         ITEMS.register(modBus);
+        ModRecipes.RECIPE_SERIALIZERS.register(modBus);
 
         container.registerConfig(ModConfig.Type.COMMON, ModSettings.SPEC);
 
