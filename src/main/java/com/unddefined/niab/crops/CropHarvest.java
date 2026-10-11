@@ -79,16 +79,27 @@ public final class CropHarvest {
     }
 
     /**
-     * 方块状态里的 age 属性（原版作物都叫 age），没有就返回 null。
+     * 方块状态里的年龄属性：叫 {@code age} 或 {@code *_age}（例如 {@code colony_age}）的整数属性。
+     * {@code stage} 这种不算——竹子的 stage 是"长没长完"，不是年龄；{@code *_age} 一律认，
+     * 让数据包标签能覆盖更多第三方作物。
      */
     public static IntegerProperty ageProperty(BlockState state) {
         for (Property<?> property : state.getProperties()) {
-            if (property instanceof IntegerProperty age && "age".equals(age.getName())) return age;
+            if (property instanceof IntegerProperty age && isAgePropertyName(age.getName())) return age;
         }
         return null;
     }
 
+    private static boolean isAgePropertyName(String name) {
+        return "age".equals(name) || name.endsWith("_age");
+    }
+
+    /**
+     * 熟没熟：{@link CropBlock} 直接问方块自己（它可能重写过属性名或最大年龄，比如某些附属的番茄），
+     * 其余方块看年龄属性有没有到顶。
+     */
     public static boolean isMature(BlockState state) {
+        if (state.getBlock() instanceof CropBlock crop) return crop.isMaxAge(state);
         IntegerProperty age = ageProperty(state);
         return age != null && state.getValue(age) >= Collections.max(age.getPossibleValues());
     }
@@ -109,8 +120,7 @@ public final class CropHarvest {
     // ---- 年龄型 ----
 
     private static boolean harvestAgeCrop(ServerLevel level, BlockPos pos, BlockState state, int multiplier) {
-        IntegerProperty age = ageProperty(state);
-        if (age == null || !isMature(state)) return false;
+        if (!isMature(state)) return false;
 
         List<ItemStack> drops = Block.getDrops(state, level, pos, level.getBlockEntity(pos));
         boolean harvested = false;
@@ -121,15 +131,18 @@ public final class CropHarvest {
         }
 
         // 只有年龄型受 reset_crop 控制：另外两族“取走产物”本身就是收成，必须做。
-        if (harvested && ModSettings.RESET_CROP.get()) resetAge(level, pos, state, age);
+        if (harvested && ModSettings.RESET_CROP.get()) level.setBlock(pos, youngest(state), Block.UPDATE_ALL);
         return harvested;
     }
 
     /**
-     * 收完把作物退回最小年龄，让它重新长。
+     * 收完把作物退回最小年龄，让它重新长。CropBlock 走它自己的 {@code getStateForAge}，
+     * 别的方块退回年龄属性的最小值。
      */
-    private static void resetAge(ServerLevel level, BlockPos pos, BlockState state, IntegerProperty age) {
-        level.setBlock(pos, state.setValue(age, Collections.min(age.getPossibleValues())), Block.UPDATE_ALL);
+    private static BlockState youngest(BlockState state) {
+        if (state.getBlock() instanceof CropBlock crop) return crop.getStateForAge(0);
+        IntegerProperty age = ageProperty(state);
+        return age == null ? state : state.setValue(age, Collections.min(age.getPossibleValues()));
     }
 
     // ---- 结瓜型 ----

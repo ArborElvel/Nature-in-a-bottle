@@ -61,12 +61,16 @@ JEI/EMI 会当成普通合成配方显示。之所以不用原版 `crafting_shap
 - 结瓜型/竖长型的“取走产物”（摘瓜、砍杆）本身就是收成，**永远执行、不看 `reset_crop`**——
   否则要么摘了不掉、要么掉的不摘，等于无限刷。
 - 瓶子草是双高作物，点上半也按下半算。玩家把甘蔗堆到 5 格、竹子堆到 16 格，也照样整株砍到剩 1 格。
-- **Farmer's Delight 不用额外适配**（拿 1.3.4 实测过）：`farmersdelight:cabbages`、`onions`、
-  `tomatoes`（含 `tomatoes_on_rope`）都 extends `CropBlock` 且 age 属性上限与 `getMaxAge()` 一致，
-  `rice_panicles` 也是 `CropBlock`（没有 `FarmersDelight` 依赖，靠类判定就吃到了）。收成分别掉
-  卷心菜+种子、洋葱、番茄+种子、稻穗（徒手口径，没刀就是 `rice_panicle`）×收成倍数。
-  `budding_tomatoes`（过渡态，会自己长成 `tomatoes`）与 `*_mushroom_colony`（属性叫 `colony_age`，
-  FD 自带"右键取一个"的玩法）有意不接管，点上去原样交回给 FD。
+- **Farmer's Delight 及其附属基本零适配**（FD 1.3.4 + 假玩家实测）：`CropBlock` 子类一律自动覆盖——
+  FD 自己的 `cabbages`、`onions`、`tomatoes`（含 `tomatoes_on_rope`；它的 age 属性其实是 `VINE_AGE`，
+  但名字仍叫 `age`、上限 3）、`rice_panicles` 都吃到了；附属作物绝大多数也是直接 extends `CropBlock`，
+  同样不用管。实测收成：卷心菜+种子、洋葱、番茄+种子、稻穗（徒手口径，没刀给 `rice_panicle`），
+  全部 ×收成倍数、收完退回幼苗。
+- 少数自己写生长逻辑、不 extends `CropBlock` 的（FD 的 `budding_tomatoes`、`*_mushroom_colony` 之类），
+  把方块 id 丢进 `niab:harvestable_crops`（年龄型）或 `niab:vertical_crops`（竖长型）就行，不用改模组代码；
+  年龄属性认 `age` 与 `*_age` 两种命名，`stage` 这种不算。默认不收 `budding_tomatoes`（过渡态，
+  会自己长成 `tomatoes`，且它的战利品只有种子）和 `*_mushroom_colony`（战利品按 age 给 2/3/4/5 个蘑菇、
+  带剪刀给整块菌落，×倍数收益很大），想要的话加进标签即可。
 
 ## 配置
 
