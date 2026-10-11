@@ -4,7 +4,6 @@ import com.unddefined.natureinabottle.config.ModSettings;
 import com.unddefined.natureinabottle.registry.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -63,24 +62,25 @@ public final class CropHarvest {
     }
 
     /**
-     * 直接收成：按战利品表取一份原版产物，乘上倍率交出去，再把作物退回最小年龄让它重新生长。
+     * 到点收成：按战利品表取一份原版产物，乘上倍率直接掉在作物旁边，
+     * 再把作物退回最小年龄让它重新生长。
      *
-     * @return 只有真的产出了东西才返回 true，调用方据此决定要不要扣时间。
+     * @return 只有真的产出了东西才返回 true。
      */
-    public static boolean harvest(ServerLevel level, BlockPos pos, Player player, ItemStack tool, int multiplier) {
+    public static boolean harvest(ServerLevel level, BlockPos pos, int multiplier) {
         BlockState state = level.getBlockState(pos);
         IntegerProperty age = ageProperty(state);
         if (!isCrop(state) || age == null || !isMature(state)) {
             return false;
         }
 
-        List<ItemStack> drops = Block.getDrops(state, level, pos, level.getBlockEntity(pos), player, tool);
+        List<ItemStack> drops = Block.getDrops(state, level, pos, level.getBlockEntity(pos));
         boolean harvested = false;
         for (ItemStack drop : drops) {
             if (drop.isEmpty()) {
                 continue;
             }
-            deliver(level, pos, player, drop, multiplier);
+            deliver(level, pos, drop, multiplier);
             harvested = true;
         }
 
@@ -91,21 +91,16 @@ public final class CropHarvest {
     }
 
     /**
-     * 把一份产物按倍率交出去。数量超过一组就拆成多份，免得出现堆叠数超过上限的物品实体。
+     * 把一份产物按倍率掉出去。数量超过一组就拆成多份，免得出现堆叠数超过上限的物品实体。
      */
-    private static void deliver(Level level, BlockPos pos, Player player, ItemStack drop, int multiplier) {
+    private static void deliver(Level level, BlockPos pos, ItemStack drop, int multiplier) {
         int remaining = drop.getCount() * Math.max(1, multiplier);
         int perStack = Math.max(1, drop.getMaxStackSize());
 
         while (remaining > 0) {
             ItemStack part = drop.copyWithCount(Math.min(remaining, perStack));
             remaining -= part.getCount();
-
-            if (ModSettings.DROP_AS_ITEMS.get()) {
-                Block.popResource(level, pos, part);
-            } else if (!player.getInventory().add(part)) {
-                player.drop(part, false);
-            }
+            Block.popResource(level, pos, part);
         }
     }
 
