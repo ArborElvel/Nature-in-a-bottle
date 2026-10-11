@@ -8,6 +8,7 @@ version = "${mod_version}"
 displayName = "${mod_name}"
 authors = "${mod_authors}"
 description = '''${mod_description}'''
+logoFile = "${mod_id}.png"
 
 # 让 FML 加载 niab.mixins.json（收成窗口里留住时间之瓶的加速实体）
 [[mixins]]
