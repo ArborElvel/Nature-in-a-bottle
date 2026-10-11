@@ -99,6 +99,21 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
 sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
 
+// mods.toml 的 logoFile 从 jar 根目录读，原图放 art/ 里另存一份（跟 ExperienceEmerald 一样）。
+tasks.named('processResources', ProcessResources).configure {
+    from('art/niab.png')
+}
+
+// 许可全文随产物一起发出去。
+tasks.named('jar', Jar).configure {
+    from('LICENSE') {
+        into 'META-INF'
+    }
+    from('COPYING') {
+        into 'META-INF'
+    }
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }

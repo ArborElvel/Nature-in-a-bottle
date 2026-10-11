@@ -1,9 +1,9 @@
-# Nature in a Bottle（瓶中自然）
+# 瓶中自然 Nature in a Bottle
 
-[Time in a Bottle](https://github.com/RealMangorage/time-in-a-bottle) 的附属模组，
-NeoForge 21.1.238 / Minecraft 1.21.1。
+Nature in a Bottle 是 [Time in a Bottle](https://github.com/RealMangorage/time-in-a-bottle)
+的附属模组（NeoForge 1.21.1）：多出一件同名新物品，右击作物叠倍率、停手 3 秒后按倍率直接收成。
 
-## 它做什么
+## 功能
 
 **机制与时间之瓶相同，功能不同**：时间之瓶右击方块是叠加速倍率、让方块一直跑随机刻；
 瓶中自然是叠倍率、然后按倍率直接收成作物。
@@ -72,9 +72,16 @@ JEI/EMI 会当成普通合成配方显示。之所以不用原版 `crafting_shap
   会自己长成 `tomatoes`，且它的战利品只有种子）和 `*_mushroom_colony`（战利品按 age 给 2/3/4/5 个蘑菇、
   带剪刀给整块菌落，×倍数收益很大），想要的话加进标签即可。
 
+## 环境
+
+- Minecraft 1.21.1
+- NeoForge 21.1.238（要求 21.1.238 或更新）
+- Java 21
+- 必需依赖：Time in a Bottle 6.5.4 或更新
+
 ## 配置
 
-`config/niab-common.toml`：
+common 配置位于 `config/niab-common.toml`：
 
 | 配置 | 默认 | 说明 |
 | --- | --- | --- |
@@ -87,13 +94,44 @@ JEI/EMI 会当成普通合成配方显示。之所以不用原版 `crafting_shap
 
 ## 开发
 
-| 场景 | 命令 |
-| --- | --- |
-| 编译验证 | `.\gradlew.bat compileJava` |
-| 完整构建 | `.\gradlew.bat build` |
-| 双客户端 + 专用服务器 | `runClient`（Alice）、`runClient2`（Bob）、`runServer` |
-| 提交前检查 | `git diff --check`、`git status --short` |
+```powershell
+.\gradlew.bat compileJava
+.\gradlew.bat runClient
+.\gradlew.bat runClient2
+.\gradlew.bat runServer
+```
 
-依赖 Time in a Bottle 6.5.4（CurseForge 文件 7555622），通过 cursmaven 解析；
-版本和文件号在 `gradle.properties` 里。物品贴图是自带的 16×160 动画
-（`textures/item/nature_in_a_bottle.png` + 同名 `.mcmeta`）。
+`runClient` 使用 Alice 和默认 `run/` 目录，`runClient2` 使用 Bob 和 `run-client-2/` 目录，
+`runServer` 使用 `run-server/` 目录。
+
+构建完整产物：
+
+```powershell
+.\gradlew.bat clean build
+```
+
+输出位于 `build/libs/niab-1.0.0.jar`。
+
+依赖 Time in a Bottle 6.5.4（CurseForge 文件 7555622），通过 cursmaven 解析，版本和文件号写在
+`gradle.properties` 里。物品贴图是自带的 16×160 动画（`textures/item/nature_in_a_bottle.png`
+加同名 `.mcmeta`）；mod 图标原图放在 `art/niab.png`，构建时复制到 jar 根目录供模组列表使用。
+
+## 许可证
+
+本项目以 **GNU Lesser General Public License v3.0 or later** 授权，
+SPDX 标识为 `LGPL-3.0-or-later`。
+
+- `LICENSE`：LGPL-3.0 全文
+- `COPYING`：GPL-3.0 全文，LGPLv3 建立在其条款之上
+
+发布页文案见 `CURSEFORGE.md` 与 `MODRINTH.md`，版本记录见 `CHANGELOG.md`。
+
+## English Summary
+
+Nature in a Bottle is an addon for Time in a Bottle on NeoForge 1.21.1. Craft the
+bottle with bone meal to turn it into a harvesting tool: right-click a crop to stack
+a multiplier (the acceleration rate escalates like Time in a Bottle, x1 up to x128),
+and three seconds after you stop clicking the produce is dropped multiplied by twice
+that rate. Age-based crops, melon and pumpkin stems, sugar cane, bamboo and cactus
+are all supported, and the bottle converts back into Time in a Bottle with its
+stored time intact.
