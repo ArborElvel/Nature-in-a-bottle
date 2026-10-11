@@ -61,6 +61,12 @@ JEI/EMI 会当成普通合成配方显示。之所以不用原版 `crafting_shap
 - 结瓜型/竖长型的“取走产物”（摘瓜、砍杆）本身就是收成，**永远执行、不看 `reset_crop`**——
   否则要么摘了不掉、要么掉的不摘，等于无限刷。
 - 瓶子草是双高作物，点上半也按下半算。玩家把甘蔗堆到 5 格、竹子堆到 16 格，也照样整株砍到剩 1 格。
+- **Farmer's Delight 不用额外适配**（拿 1.3.4 实测过）：`farmersdelight:cabbages`、`onions`、
+  `tomatoes`（含 `tomatoes_on_rope`）都 extends `CropBlock` 且 age 属性上限与 `getMaxAge()` 一致，
+  `rice_panicles` 也是 `CropBlock`（没有 `FarmersDelight` 依赖，靠类判定就吃到了）。收成分别掉
+  卷心菜+种子、洋葱、番茄+种子、稻穗（徒手口径，没刀就是 `rice_panicle`）×收成倍数。
+  `budding_tomatoes`（过渡态，会自己长成 `tomatoes`）与 `*_mushroom_colony`（属性叫 `colony_age`，
+  FD 自带"右键取一个"的玩法）有意不接管，点上去原样交回给 FD。
 
 ## 配置
 
