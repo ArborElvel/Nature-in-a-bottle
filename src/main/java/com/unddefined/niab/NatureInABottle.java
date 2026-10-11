@@ -64,8 +64,7 @@ public final class NatureInABottle {
     }
 
     private static void buildCreativeTab(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey().equals(TIAB_TAB)) {
-            event.accept(new ItemStack(NATURE_IN_A_BOTTLE.get()), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-        }
+        if (!event.getTabKey().equals(TIAB_TAB)) return;
+        event.accept(new ItemStack(NATURE_IN_A_BOTTLE.get()), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
     }
 }

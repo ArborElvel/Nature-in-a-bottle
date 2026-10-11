@@ -65,23 +65,15 @@ public class BottleConversionRecipe implements CraftingRecipe {
 
     @Override
     public boolean matches(CraftingInput input, Level level) {
-        if (input.ingredientCount() != 2) {
-            return false;
-        }
+        if (input.ingredientCount() != 2) return false;
 
         boolean foundBottle = false;
         boolean foundMaterial = false;
         for (ItemStack stack : input.items()) {
-            if (stack.isEmpty()) {
-                continue;
-            }
-            if (!foundBottle && this.bottle.test(stack)) {
-                foundBottle = true;
-            } else if (!foundMaterial && this.material.test(stack)) {
-                foundMaterial = true;
-            } else {
-                return false;
-            }
+            if (stack.isEmpty()) continue;
+            if (!foundBottle && this.bottle.test(stack)) foundBottle = true;
+            else if (!foundMaterial && this.material.test(stack)) foundMaterial = true;
+            else return false;
         }
         return foundBottle && foundMaterial;
     }
@@ -91,9 +83,7 @@ public class BottleConversionRecipe implements CraftingRecipe {
         ItemStack output = this.result.copy();
 
         for (ItemStack stack : input.items()) {
-            if (!this.bottle.test(stack)) {
-                continue;
-            }
+            if (!this.bottle.test(stack)) continue;
             // 时间跟着瓶子走：把输入那瓶的 stored_time 抄到产物上，顺带刷新描述。
             IStoredTimeComponent stored = NatureInABottleItem.storedTime(stack);
             NatureInABottleItem.setStoredTime(output, stored.stored(), stored.total());

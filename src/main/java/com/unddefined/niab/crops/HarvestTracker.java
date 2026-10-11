@@ -36,37 +36,26 @@ public final class HarvestTracker {
     }
 
     public static void onLevelTick(LevelTickEvent.Post event) {
-        if (event.getLevel() instanceof ServerLevel serverLevel) {
-            tick(serverLevel);
-        }
+        if (event.getLevel() instanceof ServerLevel serverLevel) tick(serverLevel);
     }
 
     private static void tick(ServerLevel level) {
         Map<BlockPos, Pending> pending = PENDING.get(level.dimension());
-        if (pending == null || pending.isEmpty()) {
-            return;
-        }
+        if (pending == null || pending.isEmpty()) return;
 
         List<BlockPos> ready = null;
         for (Map.Entry<BlockPos, Pending> entry : pending.entrySet()) {
-            if (entry.getValue().countDown()) {
-                if (ready == null) {
-                    ready = new ArrayList<>();
-                }
-                ready.add(entry.getKey());
-            }
+            if (!entry.getValue().countDown()) continue;
+            if (ready == null) ready = new ArrayList<>();
+            ready.add(entry.getKey());
         }
-        if (ready == null) {
-            return;
-        }
+        if (ready == null) return;
 
         for (BlockPos pos : ready) {
             Pending finished = pending.remove(pos);
             CropHarvest.harvest(level, pos, finished.multiplier());
         }
-        if (pending.isEmpty()) {
-            PENDING.remove(level.dimension());
-        }
+        if (pending.isEmpty()) PENDING.remove(level.dimension());
     }
 
     /**

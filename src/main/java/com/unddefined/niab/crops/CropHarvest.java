@@ -49,9 +49,7 @@ public final class CropHarvest {
      */
     public static IntegerProperty ageProperty(BlockState state) {
         for (Property<?> property : state.getProperties()) {
-            if (property instanceof IntegerProperty age && "age".equals(age.getName())) {
-                return age;
-            }
+            if (property instanceof IntegerProperty age && "age".equals(age.getName())) return age;
         }
         return null;
     }
@@ -70,24 +68,25 @@ public final class CropHarvest {
     public static boolean harvest(ServerLevel level, BlockPos pos, int multiplier) {
         BlockState state = level.getBlockState(pos);
         IntegerProperty age = ageProperty(state);
-        if (!isCrop(state) || age == null || !isMature(state)) {
-            return false;
-        }
+        if (!isCrop(state) || age == null || !isMature(state)) return false;
 
         List<ItemStack> drops = Block.getDrops(state, level, pos, level.getBlockEntity(pos));
         boolean harvested = false;
         for (ItemStack drop : drops) {
-            if (drop.isEmpty()) {
-                continue;
-            }
+            if (drop.isEmpty()) continue;
             deliver(level, pos, drop, multiplier);
             harvested = true;
         }
 
-        if (harvested && ModSettings.RESET_CROP.get()) {
-            level.setBlock(pos, state.setValue(age, Collections.min(age.getPossibleValues())), Block.UPDATE_ALL);
-        }
+        if (harvested && ModSettings.RESET_CROP.get()) reset(level, pos, state, age);
         return harvested;
+    }
+
+    /**
+     * 收完把作物退回最小年龄，让它重新长。
+     */
+    private static void reset(ServerLevel level, BlockPos pos, BlockState state, IntegerProperty age) {
+        level.setBlock(pos, state.setValue(age, Collections.min(age.getPossibleValues())), Block.UPDATE_ALL);
     }
 
     /**

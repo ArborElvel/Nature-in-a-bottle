@@ -10,9 +10,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 public final class BottleTicker {
 
     public static void onPlayerTick(PlayerTickEvent.Post event) {
-        if (!ModSettings.ACCUMULATE_STORED_TIME.get()) {
-            return;
-        }
+        if (!ModSettings.ACCUMULATE_STORED_TIME.get()) return;
         NatureInABottle.NATURE_IN_A_BOTTLE.get().tickPlayer(event.getEntity());
     }
 

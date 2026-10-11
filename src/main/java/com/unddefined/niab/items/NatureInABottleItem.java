@@ -47,13 +47,9 @@ public class NatureInABottleItem extends Item {
         BlockPos pos = CropHarvest.cropPos(level, context.getClickedPos());
         BlockState state = level.getBlockState(pos);
 
-        if (!CropHarvest.isCrop(state) || !CropHarvest.isMature(state)) {
-            return InteractionResult.PASS;
-        }
-        if (level.isClientSide()) {
-            // 倍率与倒计时都归服务端管，客户端只要知道这一下被消耗了。
-            return InteractionResult.SUCCESS;
-        }
+        if (!CropHarvest.isCrop(state) || !CropHarvest.isMature(state)) return InteractionResult.PASS;
+        // 倍率与倒计时都归服务端管，客户端只要知道这一下被消耗了。
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
 
         Player player = context.getPlayer();
         boolean isCreativeMode = player != null && player.isCreative();
@@ -64,29 +60,18 @@ public class NatureInABottleItem extends Item {
 
         if (pending != null) {
             int currentRate = pending.multiplier();
-            if (currentRate >= getMaxMultiplier()) {
-                return InteractionResult.SUCCESS;
-            }
+            if (currentRate >= getMaxMultiplier()) return InteractionResult.SUCCESS;
             nextRate = currentRate * 2;
             energyRequired = getEnergyCost(nextRate);
         }
 
-        if (!canUse(stack, isCreativeMode, energyRequired)) {
-            return InteractionResult.SUCCESS;
-        }
+        if (!canUse(stack, isCreativeMode, energyRequired)) return InteractionResult.SUCCESS;
 
-        if (pending == null) {
-            HarvestTracker.start((ServerLevel) level, pos, nextRate);
-        } else {
-            pending.raiseTo(nextRate);
-        }
+        if (pending == null) HarvestTracker.start((ServerLevel) level, pos, nextRate);
+        else pending.raiseTo(nextRate);
 
-        if (!isCreativeMode && ModSettings.CONSUME_STORED_TIME.get()) {
-            consume(stack, energyRequired);
-        }
-        if (ModSettings.PLAY_SOUND.get()) {
-            CommonSoundHelper.playSound(level, pos, nextRate);
-        }
+        if (!isCreativeMode && ModSettings.CONSUME_STORED_TIME.get()) consume(stack, energyRequired);
+        if (ModSettings.PLAY_SOUND.get()) CommonSoundHelper.playSound(level, pos, nextRate);
 
         return InteractionResult.SUCCESS;
     }
@@ -95,18 +80,12 @@ public class NatureInABottleItem extends Item {
      * 背包里每秒给瓶内时间加 20 tick，节奏和时间之瓶的 {@code TiabMod#tickPlayer} 一样。
      */
     public void tickPlayer(Player player) {
-        if (!(player instanceof ServerPlayer serverPlayer)) {
-            return;
-        }
+        if (!(player instanceof ServerPlayer serverPlayer)) return;
         MinecraftServer server = serverPlayer.getServer();
-        if (server == null || server.getTickCount() % 20 != 0) {
-            return;
-        }
+        if (server == null || server.getTickCount() % 20 != 0) return;
 
         ItemStack bottle = findBottle(player);
-        if (!bottle.isEmpty()) {
-            tickBottle(bottle, 20);
-        }
+        if (!bottle.isEmpty()) tickBottle(bottle, 20);
     }
 
     /**
@@ -114,9 +93,7 @@ public class NatureInABottleItem extends Item {
      */
     public static ItemStack findBottle(Player player) {
         for (ItemStack stack : player.getInventory().items) {
-            if (stack.getItem() instanceof NatureInABottleItem) {
-                return stack;
-            }
+            if (stack.getItem() instanceof NatureInABottleItem) return stack;
         }
         return ItemStack.EMPTY;
     }
@@ -125,9 +102,7 @@ public class NatureInABottleItem extends Item {
      * 给瓶子加时间，并把物品描述刷新成当前值（时间之瓶也是这么写的）。
      */
     public void tickBottle(ItemStack stack, int ticks) {
-        if (!(stack.getItem() instanceof NatureInABottleItem) || ticks <= 0) {
-            return;
-        }
+        if (!(stack.getItem() instanceof NatureInABottleItem) || ticks <= 0) return;
 
         ITiabConfig config = ICommonTimeInABottleAPI.COMMON_API.get().getConfig();
         IStoredTimeComponent stored = storedTime(stack);
