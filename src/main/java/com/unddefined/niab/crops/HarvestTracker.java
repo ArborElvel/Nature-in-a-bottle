@@ -23,11 +23,11 @@ public final class HarvestTracker {
     private static final Map<ResourceKey<Level>, Map<BlockPos, Pending>> PENDING = new HashMap<>();
 
     /**
-     * 登记一块刚被点过的作物，倒计时从满开始。
+     * 登记一块刚被点过的作物，倒计时从满开始。{@code rate} 是加速倍率（与时间之瓶同口径）。
      */
-    public static void start(ServerLevel level, BlockPos pos, int multiplier) {
+    public static void start(ServerLevel level, BlockPos pos, int rate) {
         PENDING.computeIfAbsent(level.dimension(), key -> new HashMap<>())
-                .put(pos.immutable(), new Pending(multiplier));
+                .put(pos.immutable(), new Pending(rate));
     }
 
     public static Pending get(Level level, BlockPos pos) {
@@ -53,33 +53,34 @@ public final class HarvestTracker {
 
         for (BlockPos pos : ready) {
             Pending finished = pending.remove(pos);
-            CropHarvest.harvest(level, pos, finished.multiplier());
+            // 收成倍数 = 加速倍率 × 2：加速的"1 倍"本身就是加速，收成的"1 倍"等于普通收成。
+            CropHarvest.harvest(level, pos, finished.rate() * 2);
         }
         if (pending.isEmpty()) PENDING.remove(level.dimension());
     }
 
     /**
-     * 一块作物攒着的倍率与倒计时。
+     * 一块作物攒着的加速倍率与倒计时。
      */
     public static final class Pending {
 
-        private int multiplier;
+        private int rate;
         private int ticksRemaining;
 
-        private Pending(int multiplier) {
-            this.multiplier = multiplier;
+        private Pending(int rate) {
+            this.rate = rate;
             this.ticksRemaining = ModSettings.HARVEST_DELAY_TICKS.get();
         }
 
-        public int multiplier() {
-            return multiplier;
+        public int rate() {
+            return rate;
         }
 
         /**
          * 再点一次：倍率翻倍，倒计时回到满。
          */
-        public void raiseTo(int multiplier) {
-            this.multiplier = multiplier;
+        public void raiseTo(int rate) {
+            this.rate = rate;
             this.ticksRemaining = ModSettings.HARVEST_DELAY_TICKS.get();
         }
 

@@ -33,8 +33,10 @@ import java.util.Optional;
 /**
  * 瓶中自然：时间之瓶“同机制、不同功能”的另一面。
  * <p>
- * 右击作物给这块作物叠一层倍率（第一次 1 倍，之后每点一次翻一倍，上限与时间之瓶的加速倍率同口径），
- * 每次点都按时间之瓶的公式扣瓶内时间；停手 {@code harvest_delay_ticks} 之后按倍率直接掉落作物产物。
+ * 右击作物给这块作物叠一层倍率：加速倍率跟时间之瓶同口径（第一次 1 倍，之后每点一次翻一倍，
+ * 上限 2^(MAX_RATE_MULTI-1)），收成倍数取它的两倍——收成这边的"1 倍"按字面就是普通收成，
+ * 不翻倍就不算"加上倍数"。每次点都按时间之瓶的公式扣瓶内时间；
+ * 停手 {@code harvest_delay_ticks} 之后按收成倍数直接掉落作物产物。
  * <p>
  * 加速本身还是时间之瓶那一套：每点一次都会在作物上挂/顶起一个 {@code TimeAcceleratorEntity}，
  * 所以作物在这段时间里是真的在长，玩家也能从实体的倍率/倒计时看到状态。没熟透的作物照样能点，
@@ -61,13 +63,13 @@ public class NatureInABottleItem extends Item {
         boolean isCreativeMode = player != null && player.isCreative();
 
         HarvestTracker.Pending pending = HarvestTracker.get(level, pos);
-        // 不点就是普通收成（1 倍），所以点一下直接从 2 倍起，之后每点一次翻一倍。
-        int nextRate = 2;
+        // 加速倍率跟时间之瓶同口径：第一下 1 倍，之后每点一次翻一倍（收成倍数另外取它的两倍）。
+        int nextRate = 1;
         int energyRequired = getEnergyCost(nextRate);
 
         if (pending != null) {
-            int currentRate = pending.multiplier();
-            if (currentRate >= getMaxMultiplier()) return InteractionResult.SUCCESS;
+            int currentRate = pending.rate();
+            if (currentRate >= getMaxRate()) return InteractionResult.SUCCESS;
             nextRate = currentRate * 2;
             energyRequired = getEnergyCost(nextRate);
         }
@@ -135,16 +137,17 @@ public class NatureInABottleItem extends Item {
     }
 
     /**
-     * 倍率上限跟时间之瓶的加速倍率同一个口径：2^(MAX_RATE_MULTI - 1)。
+     * 加速倍率上限跟时间之瓶同一个口径：2^(MAX_RATE_MULTI - 1)。收成倍数是它的两倍。
      */
-    public static int getMaxMultiplier() {
+    public static int getMaxRate() {
         ITiabConfig config = ICommonTimeInABottleAPI.COMMON_API.get().getConfig();
         return 1 << Math.max(0, config.MAX_RATE_MULTI() - 1);
     }
 
     /**
-     * 跟时间之瓶一样在方块上挂一个 {@code TimeAcceleratorEntity}：第一次起一层倍率，
-     * 之后再点就把倍率顶上去。区别只在寿命——这里让它跟收成倒计时同步（默认 3 秒），
+     * 跟时间之瓶一样在方块上挂一个 {@code TimeAcceleratorEntity}：第一次起 1 倍，
+     * 之后再点就把倍率顶上去，倍率序列与上限都和时间之瓶一致。区别只在寿命——
+     * 这里让它跟收成倒计时同步（默认 3 秒），
      * 到点实体自己消失，也正好是作物收成的那一刻。
      */
     private static void accelerate(ServerLevel level, BlockPos pos, int rate) {
