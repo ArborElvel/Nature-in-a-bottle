@@ -50,12 +50,15 @@ JEI/EMI 会当成普通合成配方显示。之所以不用原版 `crafting_shap
 | --- | --- | --- | --- |
 | 年龄型 | 所有 `extends CropBlock` 的方块（含模组作物），外加数据包标签 `niab:harvestable_crops` 里声明的——默认 `minecraft:nether_wart`、`minecraft:cocoa`、`minecraft:sweet_berry_bush` | `age` 到最大值 | 按方块战利品表掉 ×收成倍数，然后退回最小 `age`（受 `reset_crop` 控制） |
 | 结瓜型 | `StemBlock` / `AttachedStemBlock`（西瓜、南瓜藤，含模组藤） | 藤是 attached，也就是旁边结着瓜 | 把 `FACING` 指着的那块瓜按**瓜自己的**战利品表掉 ×收成倍数（西瓜=西瓜片 3–7、南瓜=南瓜），再把瓜摘掉；藤由原版自动变回 `age 7` 继续结 |
-| 竖长型 | 数据包标签 `niab:vertical_crops` 里声明的——默认 `minecraft:sugar_cane`、`minecraft:bamboo`、`minecraft:cactus` | 柱高 ≥ `vertical_min_height`（默认 3）；带 `stage` 属性的（竹子）还要求顶格 `STAGE=1`，也就是这株长完了 | 被砍掉那几格各按自己的战利品表掉 ×收成倍数，砍到底部留 1 格继续长 |
+| 竖长型 | 数据包标签 `niab:vertical_crops` 里声明的——默认 `minecraft:sugar_cane`、`minecraft:bamboo`、`minecraft:bamboo_sapling`、`minecraft:cactus` | 柱高 ≥ `vertical_min_height`（默认 3）就算熟，不看其它属性 | 被砍掉那几格各按自己的战利品表掉 ×收成倍数，砍到底部留 1 格继续长 |
 
 要点：
 
-- 甘蔗、仙人掌的 `age` 是“再长一格的计时器”，竹子的 `age` 是粗细（`stage` 才是长没长完），
-  都不是熟度——所以这三类走竖长型，绝不能按年龄型处理。
+- 甘蔗、仙人掌的 `age` 是“再长一格的计时器”，竹子的 `age` 是粗细，都不是熟度——所以这三类走竖长型，
+  绝不能按年龄型处理。竹子的 `stage`（长没长完）也别拿来当熟度：它要长到十几格才会出现 `STAGE=1`，
+  拿它当判据等于永远收不了。
+- 竹笋（`minecraft:bamboo_sapling`）也在竖长型标签里：点它可以加速它长成竹杆，够高才会砍；
+  竹笋本身只有 1 格，到点不会掉东西。
 - 竖长型只适用于“同种方块叠成柱”的植物。海带、洞穴藤蔓的头和身是两种方块，套不进这个模型，
   暂不支持。
 - 结瓜型/竖长型的“取走产物”（摘瓜、砍杆）本身就是收成，**永远执行、不看 `reset_crop`**——

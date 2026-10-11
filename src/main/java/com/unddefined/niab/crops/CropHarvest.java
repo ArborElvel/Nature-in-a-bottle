@@ -175,7 +175,6 @@ public final class CropHarvest {
 
     /**
      * 砍杆：先向下走到最底那一格，再向上数出整株高度。高度不到 {@code vertical_min_height} 不算熟；
-     * 带 {@code stage} 属性的（竹子）还要求顶格 {@code STAGE == 1}，也就是这株已经长完。
      * 结算从顶往下逐格做（先取战利品再砍），最下面 1 格留着继续长。
      */
     private static boolean harvestVertical(ServerLevel level, BlockPos pos, BlockState state, int multiplier) {
@@ -187,10 +186,6 @@ public final class CropHarvest {
         int height = 1;
         while (level.getBlockState(basePos.above(height)).is(plant)) height++;
         if (height < ModSettings.VERTICAL_MIN_HEIGHT.get()) return false;
-
-        BlockState topState = level.getBlockState(basePos.above(height - 1));
-        if (topState.hasProperty(BlockStateProperties.STAGE)
-                && topState.getValue(BlockStateProperties.STAGE) != 1) return false;
 
         boolean harvested = false;
         for (int i = height - 1; i >= 1; i--) {
