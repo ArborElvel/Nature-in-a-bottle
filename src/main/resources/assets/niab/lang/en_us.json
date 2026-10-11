@@ -1,6 +1,6 @@
 {
   "item.niab.nature_in_a_bottle": "Nature in a Bottle",
-  "item.niab.nature_in_a_bottle.tooltip.hint": "Right-click a crop (cane, bamboo, cactus and melon/pumpkin stems count too) to stack the multiplier; wait 3 seconds and it harvests that many times the produce",
+  "item.niab.nature_in_a_bottle.tooltip.hint": "Right-click a crop to stack the multiplier; wait 3 seconds and it harvests that many times the produce",
   "niab.configuration.harvest_delay_ticks": "Harvest delay (ticks)",
   "niab.configuration.reset_crop": "Reset crop after harvest",
   "niab.configuration.vertical_min_height": "Ripe height for cane / bamboo / cactus",
