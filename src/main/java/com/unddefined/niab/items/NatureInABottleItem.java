@@ -142,8 +142,9 @@ public class NatureInABottleItem extends Item {
     }
 
     /**
-     * 跟时间之瓶一样在方块上挂一个 {@code TimeAcceleratorEntity}：第一次起 1 倍、活一次使用的时长，
-     * 之后再点就把倍率顶上去，并按时间之瓶的算法把剩下的时间补一半。
+     * 跟时间之瓶一样在方块上挂一个 {@code TimeAcceleratorEntity}：第一次起一层倍率，
+     * 之后再点就把倍率顶上去。区别只在寿命——这里让它跟收成倒计时同步（默认 3 秒），
+     * 到点实体自己消失，也正好是作物收成的那一刻。
      */
     private static void accelerate(ServerLevel level, BlockPos pos, int rate) {
         ICommonTimeInABottleAPI api = ICommonTimeInABottleAPI.COMMON_API.get();
@@ -152,16 +153,15 @@ public class NatureInABottleItem extends Item {
 
         if (existing.isPresent()) {
             ITimeAcceleratorEntity accelerator = existing.get();
-            int usedUpTime = getEachUseDuration() - accelerator.getRemainingTime();
             accelerator.setTimeRate(rate);
-            accelerator.setRemainingTime(accelerator.getRemainingTime() + usedUpTime / 2);
+            accelerator.setRemainingTime(ModSettings.HARVEST_DELAY_TICKS.get());
             return;
         }
 
         ITimeAcceleratorEntity accelerator = api.createEntity(level);
         accelerator.setBlockPos(pos);
         accelerator.setTimeRate(rate);
-        accelerator.setRemainingTime(getEachUseDuration());
+        accelerator.setRemainingTime(ModSettings.HARVEST_DELAY_TICKS.get());
         level.addFreshEntity(accelerator.asEntity());
     }
 

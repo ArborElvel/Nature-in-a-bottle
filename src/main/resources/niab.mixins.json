@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "com.unddefined.niab.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "TimeAcceleratorEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
