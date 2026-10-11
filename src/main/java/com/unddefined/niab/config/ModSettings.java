@@ -35,7 +35,9 @@ public final class ModSettings {
                 .define("consume_stored_time", true);
         ACCUMULATE_STORED_TIME = builder
                 .comment("True: the bottle gathers 20 ticks of stored time per second while it sits in an",
-                        "inventory, exactly like Time in a Bottle does.")
+                        "inventory, exactly like Time in a Bottle does.",
+                        "Only one bottle in the inventory ever gathers at a time: while a Time in a Bottle",
+                        "is carried, it keeps that job and Nature in a Bottle stays put.")
                 .define("accumulate_stored_time", true);
         PLAY_SOUND = builder
                 .comment("Play the Time in a Bottle note block sound whenever the multiplier goes up.")
