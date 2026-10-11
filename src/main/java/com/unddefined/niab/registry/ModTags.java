@@ -1,6 +1,6 @@
-package com.unddefined.natureinabottle.registry;
+package com.unddefined.niab.registry;
 
-import com.unddefined.natureinabottle.NatureInABottle;
+import com.unddefined.niab.NatureInABottle;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;

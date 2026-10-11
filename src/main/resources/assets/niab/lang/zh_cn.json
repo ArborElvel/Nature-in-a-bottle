@@ -1,0 +1,9 @@
+{
+  "item.niab.nature_in_a_bottle": "韩立的小绿瓶",
+  "item.niab.nature_in_a_bottle.tooltip.hint": "右击成熟的作物叠加倍率，停手 3 秒后按这个倍数直接收成",
+  "niab.configuration.harvest_delay_ticks": "收成延迟（tick）",
+  "niab.configuration.reset_crop": "收获后作物退回幼苗",
+  "niab.configuration.consume_stored_time": "消耗瓶内时间",
+  "niab.configuration.accumulate_stored_time": "被动积累瓶内时间",
+  "niab.configuration.play_sound": "播放时间之瓶音符"
+}

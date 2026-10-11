@@ -1,9 +1,0 @@
-{
-  "item.nature_in_a_bottle.nature_in_a_bottle": "Nature in a Bottle",
-  "item.nature_in_a_bottle.nature_in_a_bottle.tooltip.hint": "Right-click a fully grown crop to stack the multiplier; wait 3 seconds and it harvests that many times the produce",
-  "nature_in_a_bottle.configuration.harvest_delay_ticks": "Harvest delay (ticks)",
-  "nature_in_a_bottle.configuration.reset_crop": "Reset crop after harvest",
-  "nature_in_a_bottle.configuration.consume_stored_time": "Consume stored time",
-  "nature_in_a_bottle.configuration.accumulate_stored_time": "Gather stored time passively",
-  "nature_in_a_bottle.configuration.play_sound": "Play the bottle note"
-}

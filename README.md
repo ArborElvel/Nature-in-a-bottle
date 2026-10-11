@@ -8,7 +8,7 @@ NeoForge 21.1.238 / Minecraft 1.21.1。
 **机制与时间之瓶相同，功能不同**：时间之瓶右击方块是叠加速倍率、让方块一直跑随机刻；
 瓶中自然是叠倍率、然后按倍率直接收成作物。
 
-- 手持**瓶中自然**（`nature_in_a_bottle:nature_in_a_bottle`）右击**已成熟**的作物 →
+- 手持**瓶中自然**（`niab:nature_in_a_bottle`）右击**已成熟**的作物 →
   给这块作物叠一层倍率：第一次 1 倍，之后每点一次翻一倍，直到时间之瓶的加速倍率上限
   （`2^(max_rate_multi - 1)`，默认 128 倍）；
 - 每次右击都按时间之瓶的公式扣瓶内时间：`倍率 / 2 × (TICKS_CONST × EACH_USE_DURATION)`，
@@ -30,7 +30,7 @@ NeoForge 21.1.238 / Minecraft 1.21.1。
 两条都是工作台无序合成，**瓶内时间（`stored_time`）原样继承**：转化前后是同一瓶东西，
 只是换了功能（已存时间、累计时间都跟着走）。
 
-配方类型是自定义的 `nature_in_a_bottle:bottle_conversion`，但它挂在原版 crafting 类型下，
+配方类型是自定义的 `niab:bottle_conversion`，但它挂在原版 crafting 类型下，
 JEI/EMI 会当成普通合成配方显示。之所以不用原版 `crafting_shapeless`：原版 shapeless 的产物
 是固定堆叠，带不上数据组件；而 `ItemCraftedEvent` 在 shift 连点时拿到的是产物拷贝，改了没用。
 
@@ -38,7 +38,7 @@ JEI/EMI 会当成普通合成配方显示。之所以不用原版 `crafting_shap
 
 - 所有 `extends CropBlock` 的方块：小麦、胡萝卜、马铃薯、甜菜、火把花、瓶子草，
   以及模组里继承 `CropBlock` 的作物；
-- 数据包标签 `nature_in_a_bottle:harvestable_crops` 里额外声明的方块，
+- 数据包标签 `niab:harvestable_crops` 里额外声明的方块，
   默认是 `minecraft:nether_wart`、`minecraft:cocoa`、`minecraft:sweet_berry_bush`。
 
 西瓜/南瓜茎虽然带 `age`，但不是这里说的作物，不在处理范围内。瓶子草是双高作物，
@@ -46,7 +46,7 @@ JEI/EMI 会当成普通合成配方显示。之所以不用原版 `crafting_shap
 
 ## 配置
 
-`config/nature_in_a_bottle-common.toml`：
+`config/niab-common.toml`：
 
 | 配置 | 默认 | 说明 |
 | --- | --- | --- |

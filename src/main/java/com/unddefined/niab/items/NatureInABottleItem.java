@@ -1,8 +1,8 @@
-package com.unddefined.natureinabottle.items;
+package com.unddefined.niab.items;
 
-import com.unddefined.natureinabottle.config.ModSettings;
-import com.unddefined.natureinabottle.crops.CropHarvest;
-import com.unddefined.natureinabottle.crops.HarvestTracker;
+import com.unddefined.niab.config.ModSettings;
+import com.unddefined.niab.crops.CropHarvest;
+import com.unddefined.niab.crops.HarvestTracker;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -183,7 +183,7 @@ public class NatureInABottleItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
                                 TooltipFlag tooltipFlag) {
-        tooltipComponents.add(Component.translatable("item.nature_in_a_bottle.nature_in_a_bottle.tooltip.hint")
+        tooltipComponents.add(Component.translatable("item.niab.nature_in_a_bottle.tooltip.hint")
                 .withStyle(ChatFormatting.GRAY));
     }
 }

@@ -1,7 +1,7 @@
-package com.unddefined.natureinabottle.crops;
+package com.unddefined.niab.crops;
 
-import com.unddefined.natureinabottle.config.ModSettings;
-import com.unddefined.natureinabottle.registry.ModTags;
+import com.unddefined.niab.config.ModSettings;
+import com.unddefined.niab.registry.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;

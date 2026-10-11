@@ -1,0 +1,9 @@
+{
+  "item.niab.nature_in_a_bottle": "Nature in a Bottle",
+  "item.niab.nature_in_a_bottle.tooltip.hint": "Right-click a fully grown crop to stack the multiplier; wait 3 seconds and it harvests that many times the produce",
+  "niab.configuration.harvest_delay_ticks": "Harvest delay (ticks)",
+  "niab.configuration.reset_crop": "Reset crop after harvest",
+  "niab.configuration.consume_stored_time": "Consume stored time",
+  "niab.configuration.accumulate_stored_time": "Gather stored time passively",
+  "niab.configuration.play_sound": "Play the bottle note"
+}

@@ -1,10 +1,10 @@
-package com.unddefined.natureinabottle;
+package com.unddefined.niab;
 
-import com.unddefined.natureinabottle.config.ModSettings;
-import com.unddefined.natureinabottle.crops.HarvestTracker;
-import com.unddefined.natureinabottle.items.NatureInABottleItem;
-import com.unddefined.natureinabottle.registry.ModRecipes;
-import com.unddefined.natureinabottle.server.events.BottleTicker;
+import com.unddefined.niab.config.ModSettings;
+import com.unddefined.niab.crops.HarvestTracker;
+import com.unddefined.niab.items.NatureInABottleItem;
+import com.unddefined.niab.registry.ModRecipes;
+import com.unddefined.niab.server.events.BottleTicker;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +33,7 @@ import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 @Mod(NatureInABottle.MOD_ID)
 public final class NatureInABottle {
 
-    public static final String MOD_ID = "nature_in_a_bottle";
+    public static final String MOD_ID = "niab";
 
     /**
      * 时间之瓶自己的创造页，瓶中自然跟它摆在一起。

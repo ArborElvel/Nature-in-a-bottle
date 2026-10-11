@@ -1,7 +1,7 @@
-package com.unddefined.natureinabottle.registry;
+package com.unddefined.niab.registry;
 
-import com.unddefined.natureinabottle.NatureInABottle;
-import com.unddefined.natureinabottle.crafting.BottleConversionRecipe;
+import com.unddefined.niab.NatureInABottle;
+import com.unddefined.niab.crafting.BottleConversionRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;

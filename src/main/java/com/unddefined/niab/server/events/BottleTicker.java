@@ -1,7 +1,7 @@
-package com.unddefined.natureinabottle.server.events;
+package com.unddefined.niab.server.events;
 
-import com.unddefined.natureinabottle.NatureInABottle;
-import com.unddefined.natureinabottle.config.ModSettings;
+import com.unddefined.niab.NatureInABottle;
+import com.unddefined.niab.config.ModSettings;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**

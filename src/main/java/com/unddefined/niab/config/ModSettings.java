@@ -1,9 +1,9 @@
-package com.unddefined.natureinabottle.config;
+package com.unddefined.niab.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
- * Common 配置（config/nature_in_a_bottle-common.toml），NeoForge 会自动同步到客户端。
+ * Common 配置（config/niab-common.toml），NeoForge 会自动同步到客户端。
  * 数值都留给整合包调整：停手多久收成、是否消耗/积累瓶内时间、是否让作物退回幼苗。
  */
 public final class ModSettings {

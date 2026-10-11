@@ -1,8 +1,8 @@
 {
-  "type": "nature_in_a_bottle:bottle_conversion",
+  "type": "niab:bottle_conversion",
   "category": "misc",
   "bottle": {
-    "item": "nature_in_a_bottle:nature_in_a_bottle"
+    "item": "niab:nature_in_a_bottle"
   },
   "material": {
     "item": "minecraft:redstone"

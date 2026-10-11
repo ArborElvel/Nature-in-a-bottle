@@ -1,9 +1,0 @@
-{
-  "item.nature_in_a_bottle.nature_in_a_bottle": "瓶中自然",
-  "item.nature_in_a_bottle.nature_in_a_bottle.tooltip.hint": "右击成熟的作物叠加倍率，停手 3 秒后按这个倍数直接收成",
-  "nature_in_a_bottle.configuration.harvest_delay_ticks": "收成延迟（tick）",
-  "nature_in_a_bottle.configuration.reset_crop": "收获后作物退回幼苗",
-  "nature_in_a_bottle.configuration.consume_stored_time": "消耗瓶内时间",
-  "nature_in_a_bottle.configuration.accumulate_stored_time": "被动积累瓶内时间",
-  "nature_in_a_bottle.configuration.play_sound": "播放时间之瓶音符"
-}

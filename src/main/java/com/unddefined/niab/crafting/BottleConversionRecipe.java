@@ -1,9 +1,9 @@
-package com.unddefined.natureinabottle.crafting;
+package com.unddefined.niab.crafting;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.unddefined.natureinabottle.items.NatureInABottleItem;
-import com.unddefined.natureinabottle.registry.ModRecipes;
+import com.unddefined.niab.items.NatureInABottleItem;
+import com.unddefined.niab.registry.ModRecipes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
