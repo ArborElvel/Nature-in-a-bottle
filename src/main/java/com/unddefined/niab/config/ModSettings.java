@@ -12,6 +12,7 @@ public final class ModSettings {
 
     public static final ModConfigSpec.IntValue HARVEST_DELAY_TICKS;
     public static final ModConfigSpec.BooleanValue RESET_CROP;
+    public static final ModConfigSpec.IntValue VERTICAL_MIN_HEIGHT;
     public static final ModConfigSpec.BooleanValue CONSUME_STORED_TIME;
     public static final ModConfigSpec.BooleanValue ACCUMULATE_STORED_TIME;
     public static final ModConfigSpec.BooleanValue PLAY_SOUND;
@@ -28,6 +29,12 @@ public final class ModSettings {
                 .comment("True: the crop is set back to its youngest age and grows again.",
                         "False: the crop stays fully grown and can be harvested again right away.")
                 .define("reset_crop", true);
+        VERTICAL_MIN_HEIGHT = builder
+                .comment("How tall a stacked plant (sugar cane, bamboo, cactus) has to be before it counts as",
+                        "ripe. The count includes the bottom block, so 3 means three blocks tall.",
+                        "Harvesting trims everything above the bottom block, which always happens -",
+                        "reset_crop only applies to age based crops.")
+                .defineInRange("vertical_min_height", 3, 1, 16);
         CONSUME_STORED_TIME = builder
                 .comment("True: stacking the multiplier costs stored time, using Time in a Bottle's own",
                         "formula: multiplier / 2 * (TICKS_CONST * EACH_USE_DURATION).",

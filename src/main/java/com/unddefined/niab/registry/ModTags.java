@@ -21,6 +21,14 @@ public final class ModTags {
         public static final TagKey<Block> HARVESTABLE_CROPS = TagKey.create(Registries.BLOCK,
                 ResourceLocation.fromNamespaceAndPath(NatureInABottle.MOD_ID, "harvestable_crops"));
 
+        /**
+         * 竖着长的植物：同一个方块叠成柱的那种（甘蔗、竹子、仙人掌之类）。
+         * “熟”看柱高，收成是把底部以上全砍掉、留最下面 1 格。
+         * 注意海带/洞穴藤蔓的头和身是两种方块，套不进这个模型，别往里加。
+         */
+        public static final TagKey<Block> VERTICAL_CROPS = TagKey.create(Registries.BLOCK,
+                ResourceLocation.fromNamespaceAndPath(NatureInABottle.MOD_ID, "vertical_crops"));
+
         private Blocks() {
         }
     }

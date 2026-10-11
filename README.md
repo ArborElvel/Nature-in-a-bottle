@@ -20,7 +20,7 @@ NeoForge 21.1.238 / Minecraft 1.21.1。
 - 每次右击都按时间之瓶的公式扣瓶内时间：`加速倍率 / 2 × (TICKS_CONST × EACH_USE_DURATION)`，
   创造模式不扣。按上面那串倍率算下来是 600 / 600 / 1200 / 2400 / 4800 / 9600 / 19200 / 38400 tick；
 - 停手 **3 秒**（`harvest_delay_ticks = 60`）之后，按当时的收成倍数**直接掉落**作物产物，
-  并把作物退回最小年龄让它重新生长；
+  并按各家族的规则消耗产物（年龄型退回最小 `age`，见下）；
 - 瓶内时间在背包里每秒自行积累 20 tick。**同一时间只有一瓶在攒**：带着时间之瓶时由它攒
   （时间之瓶自己的规则），没带时才轮到瓶中自然，不会两瓶同时涨。
 
@@ -42,15 +42,25 @@ NeoForge 21.1.238 / Minecraft 1.21.1。
 JEI/EMI 会当成普通合成配方显示。之所以不用原版 `crafting_shapeless`：原版 shapeless 的产物
 是固定堆叠，带不上数据组件；而 `ItemCraftedEvent` 在 shift 连点时拿到的是产物拷贝，改了没用。
 
-## 什么算“作物”
+## 能收什么：三个家族
 
-- 所有 `extends CropBlock` 的方块：小麦、胡萝卜、马铃薯、甜菜、火把花、瓶子草，
-  以及模组里继承 `CropBlock` 的作物；
-- 数据包标签 `niab:harvestable_crops` 里额外声明的方块，
-  默认是 `minecraft:nether_wart`、`minecraft:cocoa`、`minecraft:sweet_berry_bush`。
+下表就是判定顺序（从上到下即优先级）；点击时一律不判熟，熟不熟到收成那一刻再说。
 
-西瓜/南瓜茎虽然带 `age`，但不是这里说的作物，不在处理范围内。瓶子草是双高作物，
-点上半也按下半算。
+| 家族 | 认哪些方块 | 什么叫“熟” | 收成做什么 |
+| --- | --- | --- | --- |
+| 年龄型 | 所有 `extends CropBlock` 的方块（含模组作物），外加数据包标签 `niab:harvestable_crops` 里声明的——默认 `minecraft:nether_wart`、`minecraft:cocoa`、`minecraft:sweet_berry_bush` | `age` 到最大值 | 按方块战利品表掉 ×收成倍数，然后退回最小 `age`（受 `reset_crop` 控制） |
+| 结瓜型 | `StemBlock` / `AttachedStemBlock`（西瓜、南瓜藤，含模组藤） | 藤是 attached，也就是旁边结着瓜 | 把 `FACING` 指着的那块瓜按**瓜自己的**战利品表掉 ×收成倍数（西瓜=西瓜片 3–7、南瓜=南瓜），再把瓜摘掉；藤由原版自动变回 `age 7` 继续结 |
+| 竖长型 | 数据包标签 `niab:vertical_crops` 里声明的——默认 `minecraft:sugar_cane`、`minecraft:bamboo`、`minecraft:cactus` | 柱高 ≥ `vertical_min_height`（默认 3）；带 `stage` 属性的（竹子）还要求顶格 `STAGE=1`，也就是这株长完了 | 被砍掉那几格各按自己的战利品表掉 ×收成倍数，砍到底部留 1 格继续长 |
+
+要点：
+
+- 甘蔗、仙人掌的 `age` 是“再长一格的计时器”，竹子的 `age` 是粗细（`stage` 才是长没长完），
+  都不是熟度——所以这三类走竖长型，绝不能按年龄型处理。
+- 竖长型只适用于“同种方块叠成柱”的植物。海带、洞穴藤蔓的头和身是两种方块，套不进这个模型，
+  暂不支持。
+- 结瓜型/竖长型的“取走产物”（摘瓜、砍杆）本身就是收成，**永远执行、不看 `reset_crop`**——
+  否则要么摘了不掉、要么掉的不摘，等于无限刷。
+- 瓶子草是双高作物，点上半也按下半算。玩家把甘蔗堆到 5 格、竹子堆到 16 格，也照样整株砍到剩 1 格。
 
 ## 配置
 
@@ -60,6 +70,7 @@ JEI/EMI 会当成普通合成配方显示。之所以不用原版 `crafting_shap
 | --- | --- | --- |
 | `harvest_delay_ticks` | 60 | 停手多久收成；每点一次重新计时 |
 | `reset_crop` | true | 收成后把作物退回最小年龄；关掉就是原地反复收 |
+| `vertical_min_height` | 3 | 竖长植物（甘蔗/竹子/仙人掌）几格才算熟；砍杆永远只留最下面 1 格 |
 | `consume_stored_time` | true | 叠倍率消耗瓶内时间；创造模式玩家永远不消耗 |
 | `accumulate_stored_time` | true | 在背包里每秒积攒 20 tick 瓶内时间 |
 | `play_sound` | true | 倍率每上一层播放时间之瓶的音符音效 |

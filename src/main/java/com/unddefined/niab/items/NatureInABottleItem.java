@@ -55,7 +55,7 @@ public class NatureInABottleItem extends Item {
         BlockPos pos = CropHarvest.cropPos(level, context.getClickedPos());
         BlockState state = level.getBlockState(pos);
 
-        if (!CropHarvest.isCrop(state)) return InteractionResult.PASS;
+        if (!CropHarvest.isHarvestable(state)) return InteractionResult.PASS;
         // 倍率与倒计时都归服务端管，客户端只要知道这一下被消耗了。
         if (level.isClientSide()) return InteractionResult.SUCCESS;
 
