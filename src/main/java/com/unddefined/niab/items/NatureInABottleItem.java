@@ -61,7 +61,8 @@ public class NatureInABottleItem extends Item {
         boolean isCreativeMode = player != null && player.isCreative();
 
         HarvestTracker.Pending pending = HarvestTracker.get(level, pos);
-        int nextRate = 1;
+        // 不点就是普通收成（1 倍），所以点一下直接从 2 倍起，之后每点一次翻一倍。
+        int nextRate = 2;
         int energyRequired = getEnergyCost(nextRate);
 
         if (pending != null) {
