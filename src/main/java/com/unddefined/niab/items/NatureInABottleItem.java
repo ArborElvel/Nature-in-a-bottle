@@ -19,20 +19,26 @@ import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import org.mangorage.tiab.common.api.ICommonTimeInABottleAPI;
 import org.mangorage.tiab.common.api.ITiabConfig;
 import org.mangorage.tiab.common.api.impl.IStoredTimeComponent;
+import org.mangorage.tiab.common.api.impl.ITimeAcceleratorEntity;
 import org.mangorage.tiab.common.misc.CommonHelper;
 import org.mangorage.tiab.common.misc.CommonSoundHelper;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 瓶中自然：时间之瓶“同机制、不同功能”的另一面。
  * <p>
- * 右击成熟作物给这块作物叠一层倍率（第一次 1 倍，之后每点一次翻一倍，上限与时间之瓶的加速倍率同口径），
+ * 右击作物给这块作物叠一层倍率（第一次 1 倍，之后每点一次翻一倍，上限与时间之瓶的加速倍率同口径），
  * 每次点都按时间之瓶的公式扣瓶内时间；停手 {@code harvest_delay_ticks} 之后按倍率直接掉落作物产物。
- * 没熟透的作物不参与，交回给玩家自己（或时间之瓶）处理。
+ * <p>
+ * 加速本身还是时间之瓶那一套：每点一次都会在作物上挂/顶起一个 {@code TimeAcceleratorEntity}，
+ * 所以作物在这段时间里是真的在长，玩家也能从实体的倍率/倒计时看到状态。没熟透的作物照样能点，
+ * 只是到点收成时还没熟就什么都不掉（别拿幼苗刷种子）。
  */
 public class NatureInABottleItem extends Item {
 
@@ -47,7 +53,7 @@ public class NatureInABottleItem extends Item {
         BlockPos pos = CropHarvest.cropPos(level, context.getClickedPos());
         BlockState state = level.getBlockState(pos);
 
-        if (!CropHarvest.isCrop(state) || !CropHarvest.isMature(state)) return InteractionResult.PASS;
+        if (!CropHarvest.isCrop(state)) return InteractionResult.PASS;
         // 倍率与倒计时都归服务端管，客户端只要知道这一下被消耗了。
         if (level.isClientSide()) return InteractionResult.SUCCESS;
 
@@ -69,6 +75,8 @@ public class NatureInABottleItem extends Item {
 
         if (pending == null) HarvestTracker.start((ServerLevel) level, pos, nextRate);
         else pending.raiseTo(nextRate);
+
+        accelerate((ServerLevel) level, pos, nextRate);
 
         if (!isCreativeMode && ModSettings.CONSUME_STORED_TIME.get()) consume(stack, energyRequired);
         if (ModSettings.PLAY_SOUND.get()) CommonSoundHelper.playSound(level, pos, nextRate);
@@ -113,9 +121,16 @@ public class NatureInABottleItem extends Item {
      * 与 {@code TiabItem#getEnergyCost} 同一套算法：倍率越高越贵，1 倍就是一次普通使用。
      */
     public static int getEnergyCost(int timeRate) {
-        ITiabConfig config = ICommonTimeInABottleAPI.COMMON_API.get().getConfig();
-        int eachUseDuration = config.TICKS_CONST() * config.EACH_USE_DURATION();
+        int eachUseDuration = getEachUseDuration();
         return timeRate <= 1 ? eachUseDuration : timeRate / 2 * eachUseDuration;
+    }
+
+    /**
+     * 一次使用给方块加速多久，口径与 {@code TiabItem#getEachUseDuration} 相同。
+     */
+    public static int getEachUseDuration() {
+        ITiabConfig config = ICommonTimeInABottleAPI.COMMON_API.get().getConfig();
+        return config.TICKS_CONST() * config.EACH_USE_DURATION();
     }
 
     /**
@@ -124,6 +139,30 @@ public class NatureInABottleItem extends Item {
     public static int getMaxMultiplier() {
         ITiabConfig config = ICommonTimeInABottleAPI.COMMON_API.get().getConfig();
         return 1 << Math.max(0, config.MAX_RATE_MULTI() - 1);
+    }
+
+    /**
+     * 跟时间之瓶一样在方块上挂一个 {@code TimeAcceleratorEntity}：第一次起 1 倍、活一次使用的时长，
+     * 之后再点就把倍率顶上去，并按时间之瓶的算法把剩下的时间补一半。
+     */
+    private static void accelerate(ServerLevel level, BlockPos pos, int rate) {
+        ICommonTimeInABottleAPI api = ICommonTimeInABottleAPI.COMMON_API.get();
+        Optional<? extends ITimeAcceleratorEntity> existing =
+                api.getEntities(level, new AABB(pos)).stream().findFirst();
+
+        if (existing.isPresent()) {
+            ITimeAcceleratorEntity accelerator = existing.get();
+            int usedUpTime = getEachUseDuration() - accelerator.getRemainingTime();
+            accelerator.setTimeRate(rate);
+            accelerator.setRemainingTime(accelerator.getRemainingTime() + usedUpTime / 2);
+            return;
+        }
+
+        ITimeAcceleratorEntity accelerator = api.createEntity(level);
+        accelerator.setBlockPos(pos);
+        accelerator.setTimeRate(rate);
+        accelerator.setRemainingTime(getEachUseDuration());
+        level.addFreshEntity(accelerator.asEntity());
     }
 
     private static boolean canUse(ItemStack stack, boolean isCreativeMode, int energyRequired) {
